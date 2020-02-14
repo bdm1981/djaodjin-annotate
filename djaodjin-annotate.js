@@ -650,7 +650,7 @@ MIT License
       var self = this;
       context.font = self.fontsize + " sans-serif";
       context.textBaseline = "top";
-      context.fillStyle = color || self.options.color;
+      context.fillStyle = color;
       self.wrapText(context, text, x + 3, y + 4, maxWidth, 25);
     },
     pushText: function() {
@@ -663,13 +663,15 @@ MIT License
           text: text,
           fromx: self.fromx,
           fromy: self.fromy,
-          maxwidth: self.tox
+          maxwidth: self.$textbox.width(),
+          color: self.options.color
         });
         if (self.storedUndo.length > 0) {
           self.storedUndo = [];
         }
       }
       self.checkUndoRedo();
+      self.clear();
       self.redraw();
     },
     // Events
@@ -687,24 +689,22 @@ MIT License
       if (self.$textbox.is(":visible")) {
         var text = self.$textbox.val();
         self.$textbox.val("").hide();
-        if (text !== "") {
-          if (!self.tox) {
-            self.tox = 100;
-          }
+        if (text !== "" && self.options.type === "text") {
           self.storedElement.push({
             type: "text",
             text: text,
             fromx: (self.fromxText - offset.left) * self.compensationWidthRate,
             fromy: (self.fromyText - offset.top) * self.compensationWidthRate,
-            maxwidth: self.tox
+            color: self.options.color,
+            maxwidth: self.$textbox.width()
           });
           if (self.storedUndo.length > 0) {
             self.storedUndo = [];
           }
+          self.checkUndoRedo();
+          self.clear();
+          self.redraw();
         }
-        self.checkUndoRedo();
-        self.redraw();
-        self.clear();
       }
       self.tox = null;
       self.toy = null;
@@ -767,15 +767,6 @@ MIT License
               lineWidth: self.options.linewidth
             });
             break;
-          case "text":
-            self.$textbox.css({
-              left: self.fromxText + 2,
-              top: self.fromyText,
-              width: self.tox - 12,
-              height: self.toy,
-              color: self.options.color
-            });
-            break;
           case "pen":
             self.storedElement.push({
               type: "pen",
@@ -786,23 +777,27 @@ MIT License
             break;
           default:
         }
-        if (self.storedUndo.length > 0) {
-          self.storedUndo = [];
-        }
-        self.checkUndoRedo();
-        self.redraw();
       } else if (self.options.type === "text") {
         self.$textbox.css({
           left: self.fromxText + 2,
           top: self.fromyText,
-          width: 100,
+          color: self.options.color,
+          width: 300,
           height: 50
         });
       }
+
+      if (self.storedUndo.length > 0) {
+        self.storedUndo = [];
+      }
+      self.checkUndoRedo();
+      self.clear();
+      self.redraw();
     },
     annotateleave: function(event) {
       var self = this;
       if (self.clicked) {
+        console.log("annotate leave");
         self.annotatestop(event);
       }
     },

@@ -1,32 +1,40 @@
 # djaodjin-annotate.js
 
-This is a fork of the djaodjin-annotate.js is a simple jquery plugin allowing you to annotate
+This is an extended version of the djaodjin-annotate.js jquery plugin. It includes the following additions:
+
+- Color selection
+- Line thickness
+- Additional 'styleWidth' option parameter to reduce the canvas display size without reducing the output image dimensions
+
+djaodjin-annotate.js is a simple jquery plugin allowing you to annotate
 a screenshot. Try the live demo on [DjaoDjin blog](https://djaodjin.com/blog/jquery-plugin-to-annotate-images.blog).
-
-I added the ability to dynamically set the line color and line width.
-
 
 # Usage
 
 Load djaodjin-annotate.css and djaodjin-annotate.js
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset=utf-8 />
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="/static/css/annotate.css" />
-</head>
-<body>
-
-
-	<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="/static/js/djaodjin-annotate.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/static/css/annotate.css" />
+  </head>
+  <body>
+    <script
+      type="text/javascript"
+      src="//code.jquery.com/jquery-1.11.3.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/static/js/djaodjin-annotate.js"
+    ></script>
+  </body>
 </html>
 ```
 
-Just add a div element inside ```body``.
+Just add a div element inside ``body`.
 
 ```html
 <div id="myCanvas"></div>
@@ -35,8 +43,8 @@ Just add a div element inside ```body``.
 and on a script:
 
 ```javascript
-$(document).ready(function(){
-	$("#myCanvas").annotate(options);
+$(document).ready(function() {
+  $("#myCanvas").annotate(options);
 });
 ```
 
@@ -44,6 +52,7 @@ customizable options:
 
 ```javascript
 options = {
+	styleWidth: "1024px", // Set this to reduce the image on screen without losing quality by shrinking the canvas.
 	width: "640",			// Width of canvas
 	height: "400",			// Height of canvas
 	color:"red", 			// Color for shape and text
@@ -61,6 +70,7 @@ options = {
 ```
 
 ### Destroy an annotate
+
 Once initialized, it can be destroy:
 
 ```javascript
@@ -68,59 +78,68 @@ $("#myCanvas").annotate("destroy");
 ```
 
 ### Add image to existing annotate
+
 It's also possible to provide new images by pushing them:
 
 - Push an image with only path: (If image exists an id will be automatically created.)
+
 ```javascript
 $("#myCanvas").annotate("push", "images/test_2.jpg");
 ```
 
-
 - Push an image with and id and a path: (allow to build an image selector manually)
 
 ```javascript
-$("#myCanvas").annotate("push", {id:"unique_identifier", path: "images/test_2.jpg"});
+$("#myCanvas").annotate("push", {
+  id: "unique_identifier",
+  path: "images/test_2.jpg"
+});
 ```
-
 
 ### Export image
 
 ```javascript
 $("#myCanvas").annotate("export", exportOptions);
 ```
+
 Returns the image in Data URI format.
 
-* ExportOptions
+- ExportOptions
 
 ```javascript
 {
-	type: "image/jpeg"	// ex: "image/png"
-	quality: 0.75		// Available only for "image/jpeg"
+  type: "image/jpeg"; // ex: "image/png"
+  quality: 0.75; // Available only for "image/jpeg"
 }
 ```
 
 ### Events
 
-* ```annotate-image-added```: Fired when an image is initialized (plugin initialization or when a new image is pushed). Can be used to build image selector.
+- `annotate-image-added`: Fired when an image is initialized (plugin initialization or when a new image is pushed). Can be used to build image selector.
 
 ex:
 
 ```javascript
-	$('#myCanvas').on("annotate-image-added", function(event, id, path){
-		$(".my-image-selector").append("<label><input type=\"radio\" name=\"image-selector\" class=\"annotate-image-select\" id=\"" + id + "\" checked><img src=\"" + path + "\" width=\"35\" height=\"35\"></label>");
-	});
+$("#myCanvas").on("annotate-image-added", function(event, id, path) {
+  $(".my-image-selector").append(
+    '<label><input type="radio" name="image-selector" class="annotate-image-select" id="' +
+      id +
+      '" checked><img src="' +
+      path +
+      '" width="35" height="35"></label>'
+  );
+});
 ```
 
-If multiple images provided, an image selector is necessary to switch. Image selector must trigger an event on ```annotate-image-select``` class. you can custom the event by using ```selectEvent``` option (default: ```change```) and custom the readable image attribute by using ```idAttribute``` option (default: ```id```)
+If multiple images provided, an image selector is necessary to switch. Image selector must trigger an event on `annotate-image-select` class. you can custom the event by using `selectEvent` option (default: `change`) and custom the readable image attribute by using `idAttribute` option (default: `id`)
 
-#Contributing
+# Contributing
 
 The djaodjin-annotate project is using [Google Javascript style guidelines](https://google.github.io/styleguide/javascriptguide.xml),
 mechanically enforced through the [eslint-config-google](https://github.com/google/eslint-config-google) eslint plug-in.
 Thank you to @Josephdias92 for the initial work on this.
 
-
-#Release notes
+# Release notes
 
 ### v0.0.4
 
