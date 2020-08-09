@@ -34,6 +34,7 @@ MIT License
     this.compensationWidthRate = 1;
     this.linewidth = 1;
     this.fontsize = 1;
+    this.rect = null;
     this.init();
   }
   Annotate.prototype = {
@@ -75,6 +76,7 @@ MIT License
       }
 
       self.baseCanvas = document.getElementById(self.baseLayerId);
+      self.rect = self.baseCanvas.getBoundingClientRect();
       self.drawingCanvas = document.getElementById(self.drawingLayerId);
       self.baseContext = self.baseCanvas.getContext("2d");
       self.drawingContext = self.drawingCanvas.getContext("2d");
@@ -246,7 +248,7 @@ MIT License
           ";word-wrap: break-word;outline-width: 0;overflow: hidden;" +
           'padding:0px"></textarea>'
       );
-      $("body").append(self.$textbox);
+      $(self.$el).append(self.$textbox);
       if (self.options.images) {
         self.initBackgroundImages();
       } else {
@@ -718,8 +720,8 @@ MIT License
       if (self.options.type === "text") {
         self.$textbox
           .css({
-            left: self.fromxText + 2,
-            top: self.fromyText,
+            left: event.clientX - self.rect.left,
+            top: event.clientY - self.rect.top,
             width: 0,
             height: 0
           })
@@ -729,7 +731,7 @@ MIT License
         self.points.push([self.fromx, self.fromy]);
       }
     },
-    annotatestop: function() {
+    annotatestop: function(event) {
       var self = this;
       self.clicked = false;
       if (self.toy !== null && self.tox !== null) {
@@ -779,8 +781,8 @@ MIT License
         }
       } else if (self.options.type === "text") {
         self.$textbox.css({
-          left: self.fromxText + 2,
-          top: self.fromyText,
+          left: event.clientX - self.rect.left,
+          top: event.clientY - self.rect.top,
           color: self.options.color,
           width: 300,
           height: 50
